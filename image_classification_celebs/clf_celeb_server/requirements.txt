@@ -2,3 +2,5 @@ flask
 gunicorn 
 pickle-mixin 
 scikit-learn
+opencv-python
+PyWavelets
