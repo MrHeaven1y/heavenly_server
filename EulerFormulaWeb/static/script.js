@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     opacityInput.addEventListener("input", updateCircle);
     updateCircle();
 
-    const socket = io();
+    const socket = io();  // Main connection
     const thetaInput = document.getElementById('theta');
 
     socket.on('update_euler', data => {
@@ -144,14 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function updatePositionEuler(tempTheta = null) {
-        const theta = parseFloat(thetaInput.value);
-        const angle = parseFloat(angleInput.value);
-        const radius = parseFloat(radiusInput.value);
-        const data = { theta, angle, radius };
-        if (tempTheta !== null) {
-            data.tempTheta = parseFloat(tempTheta);
-        }
-        socket.emit('update_values', data);
+        const theta = thetaInput.value;
+        const angle = angleInput.value;
+        const radius = radiusInput.value;
+        socket.emit('update_values', { theta, angle, radius, tempTheta });
     }
     // Add event listener for manual theta input changes
     thetaInput.addEventListener('input', () => {

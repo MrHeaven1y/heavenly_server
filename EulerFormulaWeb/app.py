@@ -3,7 +3,7 @@ from flask_socketio import SocketIO
 import numpy as np
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app)
 
 @app.route('/')
 def index():
@@ -43,7 +43,6 @@ def handle_update_values(data):
         socketio.emit('update_euler', response_data)
     except Exception as e:
         print(f"Error in handle_update_values: {e}")
-        print(f"Received data: {data}")
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True)
+    socketio.run(app, debug=True)
