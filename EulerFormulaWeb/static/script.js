@@ -68,10 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCircle();
 
     const socket = io({
-    pingTimeout: 60000,
-    reconnection: true,
-    reconnectionAttempts: 5
-    });  // Main connection
+        transports: ['websocket'],
+        upgrade: false
+      });
     const thetaInput = document.getElementById('theta');
 
     socket.on('update_euler', data => {
