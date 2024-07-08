@@ -1,4 +1,4 @@
 numpy
 gunicorn
 flask
-flask_socketio==5.1.1
+flask_socketio
