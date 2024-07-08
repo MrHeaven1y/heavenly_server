@@ -3,7 +3,7 @@ from flask_socketio import SocketIO
 import numpy as np
 
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode='threading', cors_allowed_origins="*")
+socketio = SocketIO(app)
 @app.route('/')
 def index():
     return render_template('index.html')
