@@ -148,10 +148,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function updatePositionEuler(tempTheta = null) {
-        const theta = thetaInput.value;
-        const angle = angleInput.value;
-        const radius = radiusInput.value;
-        socket.emit('update_values', { theta, angle, radius, tempTheta });
+        const theta = parseFloat(thetaInput.value);
+        const angle = parseFloat(angleInput.value);
+        const radius = parseFloat(radiusInput.value);
+        const data = { theta, angle, radius };
+        if (tempTheta !== null) {
+            data.tempTheta = parseFloat(tempTheta);
+        }
+        socket.emit('update_values', data);
     }
     // Add event listener for manual theta input changes
     thetaInput.addEventListener('input', () => {

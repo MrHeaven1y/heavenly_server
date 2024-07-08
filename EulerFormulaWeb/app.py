@@ -43,6 +43,6 @@ def handle_update_values(data):
         socketio.emit('update_euler', response_data)
     except Exception as e:
         print(f"Error in handle_update_values: {e}")
-
+        print(f"Received data: {data}")  # Add this line for debugging
 if __name__ == '__main__':
     socketio.run(app, debug=False,host='0.0.0.0')
