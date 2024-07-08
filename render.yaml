@@ -4,8 +4,7 @@ services:
     env: docker
     region: us-central1
     buildCommand: docker build -t euler-formula-web .
-    startCommand: docker run -p 10000:10000 euler-formula-web
     envVars:
       - key: PORT
         value: 10000
-    autoDeploy: TRUE
+    autoDeploy: true
