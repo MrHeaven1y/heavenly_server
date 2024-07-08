@@ -1,5 +1,5 @@
+--upgrade pip
 numpy
 gunicorn
-Flask==2.1.0
 Flask-SocketIO==5.1.1
 eventlet==0.33.1
