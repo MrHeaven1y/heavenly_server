@@ -3,19 +3,9 @@ services:
     type: web
     env: docker
     region: us-central1
-    buildCommand: docker build -t gcr.io/$EularFormulaWeb/euler-formula-web .
-    startCommand: docker run -p 8080:8080 gcr.io/$EularFormulaWeb/euler-formula-web
+    buildCommand: docker build -t euler-formula-web .
+    startCommand: docker run -p 10000:10000 euler-formula-web
     envVars:
-      PORT: 8080
+      - key: PORT
+        value: 10000
     autoDeploy: true
-
-databases:
-  - name: euler-formula-db
-    type: postgresql
-    plan: free
-    region: us-central1
-
-staticSites:
-  - name: euler-formula-static
-    buildCommand: pip install -r requirements.txt
-    publishPath: ./build
