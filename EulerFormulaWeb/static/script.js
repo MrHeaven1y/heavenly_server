@@ -68,7 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCircle();
 
     const socket = io({
-        secure:true
+    pingTimeout: 60000,
+    reconnection: true,
+    reconnectionAttempts: 5
     });  // Main connection
     const thetaInput = document.getElementById('theta');
 
