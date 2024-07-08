@@ -45,4 +45,4 @@ def handle_update_values(data):
         print(f"Error in handle_update_values: {e}")
         print(f"Received data: {data}")  # Add this line for debugging
 if __name__ == '__main__':
-    socketio.run(app, debug=False,host='0.0.0.0')
+    socketio.run(app, debug=True,allow_unsafe_werkzeug=True)
