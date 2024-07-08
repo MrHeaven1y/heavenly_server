@@ -67,7 +67,9 @@ document.addEventListener('DOMContentLoaded', () => {
     opacityInput.addEventListener("input", updateCircle);
     updateCircle();
 
-    const socket = io();  // Main connection
+    const socket = io({
+        secure:true
+    });  // Main connection
     const thetaInput = document.getElementById('theta');
 
     socket.on('update_euler', data => {
