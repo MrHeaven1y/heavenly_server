@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rotation = document.getElementById('rot');
     const counterRotation = document.getElementById('counter-clockwise');
     const tempThetaValue = document.getElementById('tempThetaValue');
+    
     let currentRotation = 0;
     let animationId = null;
     let rotationTarget = 0;
@@ -67,27 +68,21 @@ document.addEventListener('DOMContentLoaded', () => {
     opacityInput.addEventListener("input", updateCircle);
     updateCircle();
 
-    const socket = io();  // Main connection
+    const socket = io('/main');  // Main connection
+    const thetaSocket = io('/theta');  // Connection for theta updates
     const thetaInput = document.getElementById('theta');
 
     socket.on('update_euler', data => {
         eulerValue.innerHTML = `\\(${data.euler_value}\\)`;
         thetaValue.innerHTML = `\\(${data.theta_str}\\)`;
-
-        if (isAnimating) {
-            tempThetaValue.textContent = `θ = ${parseFloat(data.temp_theta_value).toFixed(2)}`;
-        } else {
-            tempThetaValue.innerHTML = `\\(${data.temp_theta_str}\\)`;
-            debouncedTypeset();
-        }
+        MathJax.typeset();
     });
+
     function getRotationAmount() {
         const rotationAmount = parseFloat(thetaInput.value);
         const startAngle = parseFloat(angleInput.value);
         return { rotationAmount, startAngle };
     }
-
-    let accumulatedTheta = 0;  // Add this at the top of your script, with other global variables
 
     function animate() {
         if (Math.abs(currentRotation - rotationTarget) > 0.1) {
@@ -96,14 +91,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const normalizedRotation = ((currentRotation % 360) + 360) % 360;
             angleInput.value = normalizedRotation.toFixed(2);
             updateDotPosition(normalizedRotation, radiusInput.value);
-            updatePositionEuler(normalizedRotation);
+            thetaSocket.emit('theta_update', { tempThetaValue: normalizedRotation });
             animationId = requestAnimationFrame(animate);
         } else {
             isAnimating = false;
             const finalRotation = ((currentRotation % 360) + 360) % 360;
             angleInput.value = finalRotation.toFixed(2);
             updateDotPosition(finalRotation, radiusInput.value);
-            updatePositionEuler(finalRotation);
+            thetaSocket.emit('theta_update', { tempThetaValue: finalRotation });
+            updatePositionEuler();
             rotationSpeed = 0;
             cancelAnimationFrame(animationId);
             animationId = null;
@@ -118,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         rotationSpeed = rotationAmount * factor / 60;
         const finalRotation = ((rotationTarget % 360) + 360) % 360;
         updateDotPosition(finalRotation);
+        angleValue.textContent = finalRotation;
         circle.style.transform = `rotate(${-currentRotation}deg)`;
         if (!animationId) {
             animationId = requestAnimationFrame(animate);
@@ -142,18 +139,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 100);
 
+    thetaSocket.on('theta_update', data => {
+        const thetaValue = parseFloat(data.tempThetaValue.split('=')[1]);
+        if (isAnimating) {
+            tempThetaValue.textContent = `θ = ${thetaValue.toFixed(2)}`;
+        } else {
+            tempThetaValue.innerHTML = `\\(${data.tempThetaValue}\\)`;
+            debouncedTypeset();
+        }
+    });
 
-    function updatePositionEuler(tempTheta = null) {
+    function updatePositionEuler() {
         const theta = thetaInput.value;
         const angle = angleInput.value;
         const radius = radiusInput.value;
-        socket.emit('update_values', { theta, angle, radius, tempTheta });
+        socket.emit('change_values', { theta, angle, radius });
     }
-    // Add event listener for manual theta input changes
-    thetaInput.addEventListener('input', () => {
-        accumulatedTheta = parseFloat(thetaInput.value);
-        updatePositionEuler();
-    });
+
     thetaInput.addEventListener('input', updatePositionEuler);
     angleInput.addEventListener('input', updatePositionEuler);
     radiusInput.addEventListener('input', updatePositionEuler);
@@ -163,10 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     counterRotation.addEventListener('click', () => {
+
         startRotation(-1);  // Negative for counter-clockwise rotation
+
     });
 
 
+
+   
     //initial animation logic 
     // function easeInOutQuad(t) {
     //     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;

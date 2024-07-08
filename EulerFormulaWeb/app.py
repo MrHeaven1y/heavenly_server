@@ -9,13 +9,21 @@ socketio = SocketIO(app)
 def index():
     return render_template('index.html')
 
-@socketio.on('update_values')
-def handle_update_values(data):
+@socketio.on('theta_update', namespace='/theta')
+def handle_theta_update(data):
+    try:
+        temp_theta_value = float(data.get('tempThetaValue', 0))
+        temp_theta_str = f"\\theta = {temp_theta_value:.2f}"
+        socketio.emit('theta_update', {'tempThetaValue': temp_theta_str}, namespace='/theta')
+    except Exception as e:
+        print(f"Error in handle_theta_update: {e}")
+
+@socketio.on('change_values', namespace='/main')
+def handle_change_values(data):
     try:
         theta = float(data['theta'])
         radius = float(data['radius']) / 10
         angle = float(data['angle'])
-        temp_theta = data.get('tempTheta')
 
         angle_radians = angle * (np.pi / 180)
         radians = theta * (np.pi / 180)
@@ -29,20 +37,12 @@ def handle_update_values(data):
         euler_value_str = f"(Position) \\cdot e^{{i\\theta}} = {result.real:.2f} + {result.imag:.2f}i"
         theta_str = f"\\theta = {theta:.2f}"
 
-        response_data = {
+        socketio.emit('update_euler', {
             'euler_value': euler_value_str,
             'theta_str': theta_str,
-        }
-
-        if temp_theta is not None:
-            temp_theta_value = float(temp_theta)
-            temp_theta_str = f"\\theta = {temp_theta_value:.2f}"
-            response_data['temp_theta_str'] = temp_theta_str
-            response_data['temp_theta_value'] = temp_theta_value
-
-        socketio.emit('update_euler', response_data)
+        }, namespace='/main')
     except Exception as e:
-        print(f"Error in handle_update_values: {e}")
+        print(f"Error in handle_change_values: {e}")
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
