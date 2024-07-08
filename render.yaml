@@ -3,8 +3,8 @@ services:
     type: web
     env: docker
     region: us-central1
-    buildCommand: docker build -t gcr.io/$PROJECT_ID/euler-formula-web .
-    startCommand: docker run -p 8080:8080 gcr.io/$PROJECT_ID/euler-formula-web
+    buildCommand: docker build -t gcr.io/$EularFormulaWeb/euler-formula-web .
+    startCommand: docker run -p 8080:8080 gcr.io/$EularFormulaWeb/euler-formula-web
     envVars:
       PORT: 8080
     autoDeploy: true
@@ -17,5 +17,5 @@ databases:
 
 staticSites:
   - name: euler-formula-static
-    buildCommand: npm run build
+    buildCommand: pip install -r requirements.txt
     publishPath: ./build
