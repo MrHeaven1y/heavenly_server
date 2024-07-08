@@ -1,10 +1,13 @@
 services:
-  - name: euler-formula-web
-    type: web
-    env: docker
-    region: us-central1
-    buildCommand: docker build -t euler-formula-web .
-    envVars:
-      - key: PORT
-        value: 10000
-    autoDeploy: true
+  # A web service on the Ruby native runtime
+  - type: web
+    runtime: python
+    name: euler-formula-web
+    repo: https://github.com/MrHeaven1y/heavenly_server/EulerFormulaWeb # Default: Repo containing render.yaml
+    numInstances: 1   # Manual scaling configuration. Default: 1 for new services
+    region: frankfurt # Default: oregon
+    plan: starter # Default: starter
+    branch: master     # Default: master
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    autoDeploy: true # Disable automatic deploys
