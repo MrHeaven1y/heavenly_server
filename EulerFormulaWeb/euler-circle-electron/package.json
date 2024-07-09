@@ -1,0 +1,16 @@
+{
+  "name": "euler-circle-electron",
+  "version": "1.0.0",
+  "description": "Euler Circle Visualization",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "install-pip": "pip install -r requirements.txt"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^x.x.x"
+  }
+}
