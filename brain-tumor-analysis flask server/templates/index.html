@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classifier</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/min/dropzone.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/min/dropzone.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/styles.css')}}">
+</head>
+<body>
+    <div class="container">
+        <h1>Image Classifier</h1>
+        <div id="dropzone" class="dropzone">
+            <div class="dz-message">Drop image here or click to upload</div>
+        </div>
+        <button id="submitBtn">Classify Image</button>
+        <div id="error" style="display:none;">Error occurred during classification</div>
+        <div id="resultHolder" style="display:none;"></div>
+        <div id="divClassTable" style="display:none;">
+            <table>
+                <tr><th>classes</th><th>Probability Score</th></tr>
+                <tr><td>Yes</td><td id="yes"></td></tr>
+                <tr><td>No</td><td id="no"></td></tr>
+                
+            </table>
+        </div>
+    </div>
+    <script src="{{url_for('static',filename='js/script.js')}}"></script>
+
+   
+</body>
+</html>
